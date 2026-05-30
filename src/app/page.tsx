@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState, useCallback } from "react";
-import { AnimatePresence } from "framer-motion";
-import LoadingScreen from "@/components/sections/LoadingScreen";
-import Navigation from "@/components/sections/Navigation";
-import Hero from "@/components/sections/Hero";
-import OurStory from "@/components/sections/OurStory";
-import MenuHighlights from "@/components/sections/MenuHighlights";
-import SignatureShrappe from "@/components/sections/SignatureShrappe";
-import CafeExperience from "@/components/sections/CafeExperience";
-import OrderOnline from "@/components/sections/OrderOnline";
-import VisitUs from "@/components/sections/VisitUs";
-import Footer from "@/components/sections/Footer";
+import { useState, useCallback } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import LoadingScreen from '@/components/sections/LoadingScreen';
+import Navigation from '@/components/sections/Navigation';
+import Hero from '@/components/sections/Hero';
+import AboutStory from '@/components/sections/AboutStory';
+import TheSpace from '@/components/sections/TheSpace';
+import BookLibrary from '@/components/sections/BookLibrary';
+import MenuHighlights from '@/components/sections/MenuHighlights';
+import Events from '@/components/sections/Events';
+import VisitUs from '@/components/sections/VisitUs';
+import Footer from '@/components/sections/Footer';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,11 +27,11 @@ export default function Home() {
       </AnimatePresence>
       <Navigation />
       <Hero />
-      <OurStory />
+      <AboutStory />
+      <TheSpace />
+      <BookLibrary />
       <MenuHighlights />
-      <SignatureShrappe />
-      <CafeExperience />
-      <OrderOnline />
+      <Events />
       <VisitUs />
       <Footer />
     </main>

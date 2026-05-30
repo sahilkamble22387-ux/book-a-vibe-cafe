@@ -3,84 +3,46 @@
 import { useRef } from 'react';
 import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
-import { Flame, Snowflake, Star, CupSoda, Leaf, Sun, ArrowRight, UtensilsCrossed } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
-/*  Menu Category Data — from real NBC research                        */
+/*  Menu Data                                                          */
 /* ------------------------------------------------------------------ */
 
-interface MenuCategory {
+interface MenuItem {
   name: string;
   image: string;
   description: string;
-  items: string[];
-  accent: string;
-  accentLight: string;
-  badge?: 'SIGNATURE' | 'SEASONAL';
-  icon: React.ElementType;
+  price: string;
 }
 
-const menuCategories: MenuCategory[] = [
+const featuredItems: MenuItem[] = [
   {
-    name: 'Hot Coffee',
-    image: '/images/hot-coffee.png',
-    description: 'Rich, aromatic, and soul-warming — the classics done right.',
-    items: ['Cafe Latte', 'Cappuccino', 'Irish Coffee', 'Cafe Mocha', 'Hazelnut Cappuccino', 'Hot Chocolate'],
-    accent: '#D97706',
-    accentLight: 'rgba(217,119,6,0.10)',
-    icon: Flame,
+    name: 'Corn Fiesta Pizza',
+    image: '/images/menu-pizza.png',
+    description:
+      'Our signature pizza loaded with sweet corn, mozzarella, and fresh herbs on a crispy base',
+    price: '₹249',
   },
   {
-    name: 'Cold Coffee & Cold Brew',
-    image: '/images/cold-coffee.png',
-    description: 'Chilled to perfection — refreshing energy in every sip.',
-    items: ['Cold Coffee', 'Arabica Cold Coffee', 'Iced Vanilla', 'Iced Mocha', 'Cold Brew'],
-    accent: '#0570E5',
-    accentLight: 'rgba(5,112,229,0.10)',
-    icon: Snowflake,
+    name: 'Pesto Pasta',
+    image: '/images/menu-pasta.png',
+    description:
+      'Creamy basil pesto with pine nuts and parmesan, served with perfectly cooked penne',
+    price: '₹229',
   },
   {
-    name: 'Shrappe',
-    image: '/images/shrappe-featured.png',
-    description: 'Our signature Shake + Frappe fusion — creamy, indulgent, unforgettable.',
-    items: ['Creamy Shrappe', 'Nutella Shrappe', 'Brownie Shrappe', 'Lotus Biscoff Shrappe'],
-    accent: '#F476AF',
-    accentLight: 'rgba(244,118,175,0.12)',
-    badge: 'SIGNATURE',
-    icon: Star,
-  },
-  {
-    name: 'Shakes & Smoothies',
-    image: '/images/shakes.png',
-    description: 'Thick, luscious, and packed with flavour — pure indulgence.',
-    items: ['Chocolate Shake', 'Nutella Shake', 'Brownie Shake', 'Red Velvet Shake', 'Mango Delight Shake'],
-    accent: '#8B5CF6',
-    accentLight: 'rgba(139,92,246,0.10)',
-    icon: CupSoda,
-  },
-  {
-    name: 'Matcha & Specialty',
-    image: '/images/matcha.png',
-    description: 'Zen meets buzz — vibrant matcha and unique specialty brews.',
-    items: ['Matcha Iced Latte', 'Blueberry Matcha Iced Latte', 'Mango Matcha Iced Latte', 'Protein Beverage'],
-    accent: '#10B981',
-    accentLight: 'rgba(16,185,129,0.10)',
-    icon: Leaf,
-  },
-  {
-    name: 'Summer Special',
-    image: '/images/summer-special.png',
-    description: 'Seasonal mango madness — limited-time tropical bliss.',
-    items: ['Mango Cream Toast', 'Spicy Mango Mojito', 'Mango Magic Cream', 'Alphonso Shake', 'Bubble Gum Ice Fizz'],
-    accent: '#F59E0B',
-    accentLight: 'rgba(245,158,11,0.10)',
-    badge: 'SEASONAL',
-    icon: Sun,
+    name: 'Exotic Garlic Bread',
+    image: '/images/menu-garlicbread.png',
+    description:
+      'Crispy garlic bread topped with herbs and melted butter — the perfect companion',
+    price: '₹149',
   },
 ];
 
+const categories = ['Coffee & Beverages', 'Continental', 'Bakery', 'Brunch'];
+
 /* ------------------------------------------------------------------ */
-/*  Animation Variants                                                  */
+/*  Animation Variants                                                 */
 /* ------------------------------------------------------------------ */
 
 const headerContainerVariants = {
@@ -102,7 +64,7 @@ const headerItemVariants = {
 const cardContainerVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    transition: { staggerChildren: 0.15, delayChildren: 0.2 },
   },
 };
 
@@ -126,145 +88,62 @@ const bottomVariants = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Menu Card Component                                                 */
+/*  Menu Card Component                                                */
 /* ------------------------------------------------------------------ */
 
-function MenuCard({ category, index }: { category: MenuCategory; index: number }) {
-  const isShrappe = category.badge === 'SIGNATURE';
-  const IconComp = category.icon;
-
+function MenuCard({ item }: { item: MenuItem }) {
   return (
     <motion.div
       variants={cardVariants}
-      className={`group relative rounded-2xl overflow-hidden transition-all duration-400 cursor-default menu-card-hover ${
-        isShrappe
-          ? 'ring-2 ring-[#F476AF]/30 shadow-lg shadow-[#F476AF]/10'
-          : ''
-      }`}
-      style={{
-        backgroundColor: '#FFFFFF',
-        borderLeft: `4px solid ${category.accent}`,
-      }}
+      className="group rounded-2xl overflow-hidden bg-white transition-all duration-400 cursor-default menu-card-hover"
     >
-      {/* Badge */}
-      {category.badge && (
-        <div
-          className="absolute top-4 right-4 z-10 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wider uppercase"
-          style={{
-            backgroundColor: category.accent,
-            color: '#FFFFFF',
-          }}
-        >
-          {category.badge === 'SIGNATURE' ? (
-            <span className="flex items-center gap-1">
-              <Star className="w-3 h-3" fill="currentColor" />
-              SIGNATURE
-            </span>
-          ) : (
-            <span className="flex items-center gap-1">
-              <Sun className="w-3 h-3" fill="currentColor" />
-              SEASONAL
-            </span>
-          )}
-        </div>
-      )}
-
-      {/* Image Section */}
-      <div className="relative w-full h-44 sm:h-48 overflow-hidden">
+      {/* Image */}
+      <div className="relative w-full aspect-square overflow-hidden">
         <Image
-          src={category.image}
-          alt={category.name}
+          src={item.image}
+          alt={item.name}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        {/* Gradient overlay at bottom of image */}
+        {/* Subtle gradient overlay */}
         <div
           className="absolute inset-0"
           style={{
-            background: `linear-gradient(to top, rgba(17,17,28,0.55) 0%, rgba(17,17,28,0.10) 50%, transparent 100%)`,
+            background:
+              'linear-gradient(to top, rgba(26,18,16,0.40) 0%, rgba(26,18,16,0.05) 50%, transparent 100%)',
           }}
         />
-        {/* Icon badge on image */}
+        {/* Price tag */}
         <div
-          className="absolute bottom-3 left-4 z-10 flex items-center gap-2"
+          className="absolute top-4 right-4 z-10 px-3 py-1.5 rounded-full text-sm font-bold text-white shadow-lg"
+          style={{ backgroundColor: '#6B2737' }}
         >
-          <div
-            className="w-8 h-8 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: category.accent }}
-          >
-            <IconComp className="w-4 h-4 text-white" />
-          </div>
-          <h3
-            className="text-white text-lg sm:text-xl font-bold drop-shadow-md"
-          >
-            {category.name}
-          </h3>
+          {item.price}
         </div>
       </div>
 
-      {/* Content Section */}
-      <div className="p-4 sm:p-5">
-        {/* Description */}
-        <p className="text-sm text-[#6B7280] leading-relaxed mb-3">
-          {category.description}
+      {/* Content */}
+      <div className="p-5 sm:p-6">
+        <h3
+          className="text-lg sm:text-xl font-bold text-[#1A1210] mb-2"
+          style={{ fontFamily: 'var(--font-playfair)' }}
+        >
+          {item.name}
+        </h3>
+        <p className="text-sm text-[#8B7D6B] leading-relaxed">
+          {item.description}
         </p>
-
-        {/* Popular Items */}
-        <div className="space-y-1.5">
-          <p
-            className="text-[10px] uppercase tracking-widest font-semibold"
-            style={{ color: category.accent }}
-          >
-            Popular Items
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {category.items.slice(0, 4).map((item) => (
-              <span
-                key={item}
-                className="inline-block text-xs px-2.5 py-1 rounded-full font-medium"
-                style={{
-                  backgroundColor: category.accentLight,
-                  color: category.accent,
-                }}
-              >
-                {item}
-              </span>
-            ))}
-            {category.items.length > 4 && (
-              <span
-                className="inline-block text-xs px-2.5 py-1 rounded-full font-medium"
-                style={{
-                  backgroundColor: category.accentLight,
-                  color: category.accent,
-                }}
-              >
-                +{category.items.length - 4} more
-              </span>
-            )}
-          </div>
-        </div>
       </div>
-
-      {/* Shrappe glow effect */}
-      {isShrappe && (
-        <div
-          className="absolute inset-0 pointer-events-none rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-          style={{
-            boxShadow: '0 0 40px rgba(244,118,175,0.25), 0 0 80px rgba(244,118,175,0.10)',
-          }}
-        />
-      )}
     </motion.div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Main MenuHighlights Component                                       */
+/*  Main MenuHighlights Component                                      */
 /* ------------------------------------------------------------------ */
 
 export default function MenuHighlights() {
-  const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -276,21 +155,20 @@ export default function MenuHighlights() {
   return (
     <section
       id="menu"
-      ref={sectionRef}
       className="relative w-full overflow-hidden"
-      style={{ backgroundColor: '#FDF9EF' }}
+      style={{ backgroundColor: '#F5EDE0' }}
     >
-      {/* ── Decorative background blobs ── */}
+      {/* Decorative background blobs */}
       <div
-        className="absolute top-20 -left-32 w-72 h-72 rounded-full opacity-20 blur-3xl pointer-events-none"
-        style={{ backgroundColor: '#0570E5' }}
+        className="absolute top-20 -left-32 w-72 h-72 rounded-full opacity-15 blur-3xl pointer-events-none"
+        style={{ backgroundColor: '#C4973B' }}
       />
       <div
-        className="absolute bottom-40 -right-32 w-80 h-80 rounded-full opacity-15 blur-3xl pointer-events-none"
-        style={{ backgroundColor: '#F476AF' }}
+        className="absolute bottom-40 -right-32 w-80 h-80 rounded-full opacity-10 blur-3xl pointer-events-none"
+        style={{ backgroundColor: '#6B2737' }}
       />
 
-      {/* ── Section Header ── */}
+      {/* Section Header */}
       <div
         ref={headerRef}
         className="px-4 sm:px-6 lg:px-8 pt-20 md:pt-28 pb-10 md:pb-14 max-w-6xl mx-auto"
@@ -304,34 +182,35 @@ export default function MenuHighlights() {
           {/* Label */}
           <motion.p
             variants={headerItemVariants}
-            className="text-[#0570E5] text-xs sm:text-sm tracking-[0.35em] uppercase font-semibold mb-4"
+            className="text-[#C4973B] text-xs sm:text-sm tracking-[0.35em] uppercase font-semibold mb-4"
           >
-            OUR MENU
+            FROM OUR KITCHEN
           </motion.p>
 
           {/* Heading */}
           <motion.h2
             variants={headerItemVariants}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#11111C] mb-4 leading-tight"
+            className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#1A1210] mb-4 leading-tight"
+            style={{ fontFamily: 'var(--font-playfair)' }}
           >
-            100+ Handcrafted{' '}
-            <span className="gradient-text">Beverages</span>
+            Bites Worth Staying For
           </motion.h2>
 
-          {/* Subtext */}
+          {/* Subtitle */}
           <motion.p
             variants={headerItemVariants}
-            className="text-base sm:text-lg text-[#6B7280] max-w-2xl leading-relaxed mb-6"
+            className="text-base sm:text-lg text-[#8B7D6B] max-w-2xl leading-relaxed"
           >
-            From bold espressos to creamy Shrappe, refreshing matcha to indulgent shakes — there&apos;s something for every mood.
+            From hand-crafted pizzas to aromatic coffees — every dish is made to
+            complement your reading and working experience.
           </motion.p>
 
-          {/* Gradient Divider */}
-          <motion.div variants={headerItemVariants} className="section-divider" />
+          {/* Divider */}
+          <motion.div variants={headerItemVariants} className="section-divider mt-6" />
         </motion.div>
       </div>
 
-      {/* ── Menu Category Cards Grid ── */}
+      {/* Featured Cards Grid */}
       <div
         ref={gridRef}
         className="px-4 sm:px-6 lg:px-8 pb-12 md:pb-16 max-w-6xl mx-auto"
@@ -340,60 +219,49 @@ export default function MenuHighlights() {
           variants={cardContainerVariants}
           initial="hidden"
           animate={gridInView ? 'visible' : 'hidden'}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
         >
-          {menuCategories.map((category, index) => (
-            <MenuCard key={category.name} category={category} index={index} />
+          {featuredItems.map((item) => (
+            <MenuCard key={item.name} item={item} />
           ))}
         </motion.div>
       </div>
 
-      {/* ── Food Note ── */}
-      <div className="px-4 sm:px-6 lg:px-8 pb-8 max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={gridInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          transition={{ duration: 0.6, delay: 0.8, ease: 'easeOut' }}
-          className="flex items-center justify-center gap-2 text-sm sm:text-base text-[#6B7280]"
-        >
-          <UtensilsCrossed className="w-4 h-4 text-[#DD5350] shrink-0" />
-          <span>
-            Plus, tasty bites to fuel your day —{' '}
-            <span className="font-semibold text-[#11111C]">Tandoori Masala Maggi</span>,{' '}
-            <span className="font-semibold text-[#11111C]">Peri Peri Maggi</span>, Brownies &amp; more!
-          </span>
-        </motion.div>
-      </div>
-
-      {/* ── Bottom CTA ── */}
+      {/* Category Tags */}
       <div
         ref={bottomRef}
-        className="px-4 sm:px-6 lg:px-8 pb-20 md:pb-28 max-w-6xl mx-auto"
+        className="px-4 sm:px-6 lg:px-8 pb-8 max-w-6xl mx-auto"
       >
         <motion.div
           variants={bottomVariants}
           initial="hidden"
           animate={bottomInView ? 'visible' : 'hidden'}
-          className="flex flex-col items-center gap-6"
+          className="flex flex-wrap items-center justify-center gap-3 mb-8"
         >
-          <a
-            href="https://www.zomato.com/pune/nothing-before-coffee-kalyani-nagar/order"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-full border-2 border-[#0570E5] text-[#0570E5] font-semibold text-sm sm:text-base tracking-wide transition-all duration-300 hover:bg-[#0570E5] hover:text-white hover:shadow-lg hover:shadow-[#0570E5]/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0570E5]"
-          >
-            View Full Menu
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </a>
-
-          {/* Decorative dot row */}
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0570E5]/30" />
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F476AF]/40" />
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0570E5]/30" />
-          </div>
+          {categories.map((cat) => (
+            <span
+              key={cat}
+              className="inline-block px-5 py-2 rounded-full text-sm font-medium border border-[#C4973B]/30 text-[#6B2737] bg-white/60 backdrop-blur-sm transition-all duration-300 hover:bg-[#6B2737] hover:text-white hover:border-[#6B2737] cursor-default"
+            >
+              {cat}
+            </span>
+          ))}
         </motion.div>
+
+        {/* Bottom Note */}
+        <motion.p
+          variants={bottomVariants}
+          initial="hidden"
+          animate={bottomInView ? 'visible' : 'hidden'}
+          className="text-center text-sm text-[#8B7D6B]"
+        >
+          Full menu available at the cafe. Average cost for two:{' '}
+          <span className="font-semibold text-[#1A1210]">₹300</span>
+        </motion.p>
       </div>
+
+      {/* Bottom spacer */}
+      <div className="h-16 md:h-20" />
     </section>
   );
 }

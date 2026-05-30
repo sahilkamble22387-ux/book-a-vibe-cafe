@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     if (existing) {
       return NextResponse.json(
-        { success: true, message: "You're already subscribed! Stay buzzed ☕" },
+        { success: true, message: "You're already subscribed! Stay in the loop 📚" },
         { status: 200 }
       );
     }
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { success: true, message: "Welcome to the NBC family! Stay buzzed ☕" },
+      { success: true, message: "Welcome to Bookavibe! Stay in the loop 📚☕" },
       { status: 200 }
     );
   } catch (error) {

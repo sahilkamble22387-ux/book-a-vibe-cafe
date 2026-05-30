@@ -1,34 +1,42 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "Nothing Before Coffee | NBC — Bring on the Buzz",
+  title: "Bookavibe — Book Cafe & Co-working Space | FC Road, Pune",
   description:
-    "Born in India, Nothing Before Coffee is where mornings begin, ideas flow, and communities connect. High quality coffee, budget friendly prices, zero compromise. Visit our Kalyani Nagar, Pune café.",
+    "Where books meet brews and ideas come to life. Bookavibe is Pune's favourite book cafe and co-working space on FC Road. Premium Chikmagalur coffee, thousands of books, fast WiFi, and pocket-friendly pricing. Read, work, unwind.",
   keywords: [
-    "Nothing Before Coffee",
-    "NBC",
-    "coffee shop",
-    "Kalyani Nagar",
+    "Bookavibe",
+    "book cafe",
+    "co-working space",
+    "FC Road",
     "Pune",
-    "Shrappe",
-    "specialty coffee",
-    "cafe",
-    "Indian coffee chain",
+    "cafe with books",
+    "work from cafe",
+    "laptop friendly cafe",
+    "open mic",
+    "coffee shop",
   ],
-  authors: [{ name: "Nothing Before Coffee" }],
+  authors: [{ name: "Bookavibe" }],
   openGraph: {
-    title: "Nothing Before Coffee | Bring on the Buzz",
-    description: "High quality coffee. Budget friendly prices. Zero compromise.",
+    title: "Bookavibe — Book Cafe & Co-working Space",
+    description: "Books. Bites. Business. The perfect blend of relaxation and productivity.",
     type: "website",
   },
 };
@@ -41,8 +49,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins.variable} antialiased bg-background text-foreground font-sans`}
-        style={{ fontFamily: "var(--font-poppins), sans-serif" }}
+        className={`${playfair.variable} ${inter.variable} antialiased bg-background text-foreground font-sans`}
+        style={{ fontFamily: "var(--font-inter), sans-serif" }}
       >
         {children}
         <Toaster />
