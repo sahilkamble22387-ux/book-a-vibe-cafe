@@ -1,23 +1,25 @@
 'use client';
 
-import { useEffect, useRef, useMemo } from 'react';
+import { useRef, useMemo } from 'react';
+import Image from 'next/image';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ChevronDown, MapPin, Coffee, CalendarDays } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
-/*  Coffee Particle — tiny dot drifting upward like steam             */
+/*  Coffee Bean Particle — small circles drifting upward               */
 /* ------------------------------------------------------------------ */
 
-interface CoffeeParticleProps {
+interface ParticleProps {
   x: number;
   y: number;
   size: number;
   duration: number;
   delay: number;
   drift: number;
+  color: string;
 }
 
-function CoffeeParticle({ x, y, size, duration, delay, drift }: CoffeeParticleProps) {
+function CoffeeParticle({ x, y, size, duration, delay, drift, color }: ParticleProps) {
   return (
     <motion.span
       className="absolute rounded-full"
@@ -26,13 +28,14 @@ function CoffeeParticle({ x, y, size, duration, delay, drift }: CoffeeParticlePr
         top: `${y}%`,
         width: size,
         height: size,
-        background: `radial-gradient(circle, rgba(196,136,58,0.5) 0%, rgba(196,136,58,0) 70%)`,
+        background: color,
       }}
       initial={{ opacity: 0, y: 0, x: 0 }}
       animate={{
-        opacity: [0, 0.6, 0.3, 0],
-        y: [0, -80, -160, -240],
-        x: [0, drift * 0.3, drift, drift * 0.6],
+        opacity: [0, 0.7, 0.4, 0],
+        y: [0, -100, -200, -320],
+        x: [0, drift * 0.3, drift, drift * 0.5],
+        scale: [0.8, 1, 0.9, 0.6],
       }}
       transition={{
         duration,
@@ -45,27 +48,34 @@ function CoffeeParticle({ x, y, size, duration, delay, drift }: CoffeeParticlePr
 }
 
 /* ------------------------------------------------------------------ */
-/*  Particle field — generates a deterministic set of particles       */
+/*  Particle Field — deterministic set of coffee bean particles        */
 /* ------------------------------------------------------------------ */
 
 function ParticleField() {
-  // Use a simple seeded approach so particles stay consistent across renders
-  const particles = useMemo<CoffeeParticleProps[]>(() => {
-    const count = 28;
-    const arr: CoffeeParticleProps[] = [];
+  const particles = useMemo<ParticleProps[]>(() => {
+    const count = 30;
+    const arr: ParticleProps[] = [];
     let seed = 42;
     const nextRand = () => {
       seed = (seed * 16807 + 0) % 2147483647;
       return seed / 2147483647;
     };
+    const colors = [
+      'rgba(5, 112, 229, 0.5)',   // NBC Blue
+      'rgba(244, 118, 175, 0.5)',  // NBC Pink
+      'rgba(5, 112, 229, 0.35)',
+      'rgba(244, 118, 175, 0.35)',
+      'rgba(221, 83, 80, 0.3)',    // NBC Red
+    ];
     for (let i = 0; i < count; i++) {
       arr.push({
-        x: 10 + nextRand() * 80,
-        y: 50 + nextRand() * 50,
-        size: 3 + nextRand() * 5,
-        duration: 6 + nextRand() * 8,
-        delay: nextRand() * 6,
-        drift: -40 + nextRand() * 80,
+        x: 5 + nextRand() * 90,
+        y: 40 + nextRand() * 60,
+        size: 4 + nextRand() * 8,
+        duration: 7 + nextRand() * 10,
+        delay: nextRand() * 8,
+        drift: -50 + nextRand() * 100,
+        color: colors[Math.floor(nextRand() * colors.length)],
       });
     }
     return arr;
@@ -81,7 +91,7 @@ function ParticleField() {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Main Hero Component                                               */
+/*  Main Hero Component                                                */
 /* ------------------------------------------------------------------ */
 
 export default function Hero() {
@@ -93,10 +103,9 @@ export default function Hero() {
     offset: ['start start', 'end start'],
   });
 
-  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
-  const overlayOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.4]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
   const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '15%']);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   /* ---------------------------------------------------------------- */
   /*  Stagger animation variants                                      */
@@ -105,16 +114,16 @@ export default function Hero() {
   const containerVariants = {
     hidden: {},
     visible: {
-      transition: { staggerChildren: 0.15, delayChildren: 0.3 },
+      transition: { staggerChildren: 0.18, delayChildren: 0.4 },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 40 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+      transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
     },
   };
 
@@ -122,53 +131,43 @@ export default function Hero() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { duration: 1, ease: 'easeOut' },
+      transition: { duration: 1.2, ease: 'easeOut' },
     },
   };
 
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-screen min-h-[600px] max-h-[1200px] overflow-hidden"
+      id="hero"
+      className="relative w-full min-h-screen overflow-hidden"
     >
-      {/* ---- Parallax Background Image ---- */}
+      {/* ---- Background Image with Parallax ---- */}
       <motion.div
         className="absolute inset-0 w-full h-[130%] -top-[15%]"
         style={{ y: bgY }}
       >
-        <img
-          src="/images/hero.png"
-          alt="Blue Tokai Coffee Roasters — specialty coffee being poured"
-          className="w-full h-full object-cover object-center"
-          loading="eager"
+        <Image
+          src="/images/hero-bg.png"
+          alt="Nothing Before Coffee — bold, energetic coffee experience"
+          fill
+          className="object-cover object-center"
+          priority
+          sizes="100vw"
         />
       </motion.div>
 
-      {/* ---- Dark Gradient Overlay ---- */}
-      <motion.div
-        className="absolute inset-0 z-[2]"
-        style={{
-          opacity: overlayOpacity,
-          background:
-            'linear-gradient(180deg, #1A0F08 0%, #2C1810DD 35%, #2C1810AA 55%, transparent 100%)',
-        }}
-      />
-
-      {/* ---- Subtle vignette ---- */}
+      {/* ---- Dark Overlay ---- */}
       <div
-        className="absolute inset-0 z-[3] pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(ellipse at center, transparent 50%, rgba(26,15,8,0.5) 100%)',
-        }}
+        className="absolute inset-0 z-[2]"
+        style={{ backgroundColor: 'rgba(17, 17, 28, 0.6)' }}
       />
 
-      {/* ---- Floating Coffee Particles ---- */}
+      {/* ---- Floating Coffee Bean Particles ---- */}
       <ParticleField />
 
       {/* ---- Main Content ---- */}
       <motion.div
-        className="relative z-20 flex flex-col items-center justify-center h-full px-4 sm:px-6 lg:px-8 text-center"
+        className="relative z-20 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8 text-center"
         style={{ y: contentY, opacity: contentOpacity }}
       >
         <motion.div
@@ -177,81 +176,45 @@ export default function Hero() {
           animate="visible"
           className="flex flex-col items-center gap-4 sm:gap-5 md:gap-6 max-w-4xl"
         >
-          {/* Decorative Accent Line */}
-          <motion.div variants={itemVariants} className="flex items-center gap-3">
-            <span className="block w-8 h-[1px] bg-[#C4883A]/60" />
-            <span className="block w-1.5 h-1.5 rounded-full bg-[#C4883A]/80" />
-            <span className="block w-8 h-[1px] bg-[#C4883A]/60" />
-          </motion.div>
-
-          {/* Brand Name — Small Caps */}
-          <motion.p
-            variants={itemVariants}
-            className="font-[family-name:var(--font-inter)] text-[#C4883A] uppercase tracking-[0.5em] text-[10px] sm:text-xs md:text-sm font-medium leading-none"
-          >
-            Blue Tokai Coffee Roasters
-          </motion.p>
-
           {/* Headline */}
           <motion.h1
             variants={itemVariants}
-            className="font-[family-name:var(--font-playfair)] text-[#F0E6D6] font-bold leading-[1.05] text-5xl md:text-7xl lg:text-8xl"
+            className="text-white font-extrabold leading-[1.05] text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl tracking-tight"
           >
-            From Farm
+            BRING ON
             <br />
-            to Cup
+            THE BUZZ
           </motion.h1>
 
           {/* Subtitle */}
           <motion.p
             variants={itemVariants}
-            className="font-[family-name:var(--font-playfair)] italic text-[#C4883A] text-xl md:text-2xl font-normal"
+            className="text-white/80 text-lg sm:text-xl md:text-2xl font-light max-w-2xl leading-relaxed"
           >
-            India&apos;s Specialty Coffee Story
+            High Quality Coffee. Budget Friendly Prices. Zero Compromise.
           </motion.p>
-
-          {/* Decorative Accent Line — bottom */}
-          <motion.div variants={itemVariants} className="flex items-center gap-3 mt-1">
-            <span className="block w-12 h-[1px] bg-[#C4883A]/40" />
-            <Coffee className="w-4 h-4 text-[#C4883A]/60" strokeWidth={1.5} />
-            <span className="block w-12 h-[1px] bg-[#C4883A]/40" />
-          </motion.div>
-
-          {/* Location Badge */}
-          <motion.div
-            variants={itemVariants}
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-[#C4883A]/30 bg-[#1A0F08]/60 backdrop-blur-sm mt-1"
-          >
-            <MapPin className="w-3.5 h-3.5 text-[#C4883A]" strokeWidth={2} />
-            <span className="font-[family-name:var(--font-inter)] text-[#F0E6D6] text-xs sm:text-sm font-medium tracking-wide">
-              Kalyani Nagar
-            </span>
-          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
             variants={itemVariants}
-            className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mt-4 sm:mt-6"
+            className="flex flex-col sm:flex-row items-center gap-4 mt-4 sm:mt-6"
           >
-            {/* Primary CTA */}
+            {/* Explore Menu */}
             <a
-              href="#coffee"
-              className="group relative inline-flex items-center gap-2 px-7 py-3.5 bg-[#C4883A] text-[#1A0F08] font-[family-name:var(--font-inter)] font-semibold text-sm tracking-wide rounded-sm overflow-hidden transition-colors duration-300 hover:bg-[#D49A4C] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C4883A]"
+              href="#menu"
+              className="inline-flex items-center justify-center px-8 py-3.5 bg-[#0570E5] text-white font-semibold text-sm sm:text-base tracking-wide rounded-full transition-all duration-300 hover:bg-[#0455B4] hover:shadow-lg hover:shadow-[#0570E5]/30 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0570E5]"
             >
-              <span className="relative z-10 flex items-center gap-2">
-                <Coffee className="w-4 h-4 transition-transform duration-300 group-hover:rotate-12" strokeWidth={2} />
-                Explore Our Coffee
-              </span>
-              <span className="absolute inset-0 bg-gradient-to-r from-[#D49A4C] to-[#C4883A] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              Explore Menu
             </a>
 
-            {/* Secondary CTA */}
+            {/* Order Now */}
             <a
-              href="#reserve"
-              className="group inline-flex items-center gap-2 px-7 py-3.5 border border-[#C4883A]/50 text-[#F0E6D6] font-[family-name:var(--font-inter)] font-medium text-sm tracking-wide rounded-sm transition-all duration-300 hover:border-[#C4883A] hover:bg-[#C4883A]/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C4883A]"
+              href="https://stores.nothingbeforecoffee.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-8 py-3.5 bg-[#DD5350] text-white font-semibold text-sm sm:text-base tracking-wide rounded-full transition-all duration-300 hover:bg-[#C44040] hover:shadow-lg hover:shadow-[#DD5350]/30 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#DD5350]"
             >
-              <CalendarDays className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2} />
-              Reserve a Table
+              Order Now
             </a>
           </motion.div>
         </motion.div>
@@ -262,10 +225,10 @@ export default function Hero() {
         variants={fadeVariants}
         initial="hidden"
         animate="visible"
-        transition={{ delay: 2 }}
-        className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
+        transition={{ delay: 2.5 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
       >
-        <span className="font-[family-name:var(--font-inter)] text-[#F0E6D6]/50 text-[10px] uppercase tracking-[0.3em]">
+        <span className="text-white/40 text-[10px] sm:text-xs uppercase tracking-[0.3em] font-medium">
           Scroll
         </span>
         <motion.div
@@ -276,16 +239,16 @@ export default function Hero() {
             ease: 'easeInOut',
           }}
         >
-          <ChevronDown className="w-5 h-5 text-[#C4883A]/70" strokeWidth={1.5} />
+          <ChevronDown className="w-5 h-5 text-white/50" strokeWidth={2} />
         </motion.div>
       </motion.div>
 
-      {/* ---- Bottom Edge Gradient — blends into next section ---- */}
+      {/* ---- Bottom Gradient — smooth transition to next section ---- */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-24 z-20 pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none"
         style={{
           background:
-            'linear-gradient(to top, #FAF6F0 0%, transparent 100%)',
+            'linear-gradient(to top, #FFFFFF 0%, rgba(255,255,255,0.6) 40%, transparent 100%)',
         }}
       />
     </section>

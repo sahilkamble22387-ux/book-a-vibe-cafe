@@ -1,131 +1,112 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Coffee,
-  MapPin,
   Phone,
   Mail,
+  Clock,
   Instagram,
   Facebook,
   Twitter,
   ArrowUp,
   Heart,
-  ExternalLink,
 } from "lucide-react";
+import { toast } from "sonner";
 
-const footerLinks = {
-  coffee: [
-    { label: "Espresso", href: "#coffee" },
-    { label: "Manual Brew", href: "#coffee" },
-    { label: "Single Origin", href: "#coffee" },
-    { label: "Cold Brew", href: "#coffee" },
-  ],
-  experience: [
-    { label: "The Roastery", href: "#roastery" },
-    { label: "Our Journey", href: "#journey" },
-    { label: "Café Experience", href: "#cafe" },
-    { label: "Events", href: "#events" },
-  ],
-  company: [
-    { label: "Subscriptions", href: "#subscriptions" },
-    { label: "Reservations", href: "#reservations" },
-    { label: "Gift Cards", href: "#subscriptions" },
-    { label: "Careers", href: "#" },
-  ],
-};
+const quickLinks = [
+  { label: "Our Story", href: "#our-story" },
+  { label: "Menu", href: "#menu" },
+  { label: "Shrappe", href: "#shrappe" },
+  { label: "Experience", href: "#experience" },
+  { label: "Visit Us", href: "#visit" },
+];
+
+const socialLinks = [
+  { icon: Instagram, label: "Instagram" },
+  { icon: Facebook, label: "Facebook" },
+  { icon: Twitter, label: "Twitter" },
+];
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setIsSubscribing(true);
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!res.ok) throw new Error("Failed to subscribe");
+
+      toast.success("You're in! ☕", {
+        description: "Stay buzzed — NBC updates are on the way.",
+      });
+      setEmail("");
+    } catch {
+      toast.error("Something went wrong", {
+        description: "Please try again later.",
+      });
+    } finally {
+      setIsSubscribing(false);
+    }
   };
 
   return (
     <footer
       className="relative"
-      style={{ background: "linear-gradient(180deg, #2C1810 0%, #1A0F08 100%)" }}
+      style={{ backgroundColor: "#11111C" }}
     >
-      {/* Decorative top border */}
-      <div className="h-px w-full" style={{ background: "linear-gradient(90deg, transparent, #8B6914, #C4883A, #8B6914, transparent)" }} />
+      {/* Decorative top gradient line */}
+      <div
+        className="h-1 w-full"
+        style={{
+          background: "linear-gradient(90deg, #0570E5, #F476AF, #DD5350, #FBBF24, #0570E5)",
+        }}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Footer Content */}
-        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
-          {/* Brand Column */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <Coffee className="w-8 h-8 text-[#C4883A]" />
+        {/* ── Main Footer Content: 4 columns ── */}
+        <div className="py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
+          {/* Column 1 - Brand */}
+          <div className="sm:col-span-2 lg:col-span-1">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 rounded-full bg-[#0570E5] flex items-center justify-center">
+                <Coffee className="w-5 h-5 text-white" />
+              </div>
               <div>
-                <h3
-                  className="text-xl font-semibold tracking-wider text-[#F0E6D6]"
-                  style={{ fontFamily: "var(--font-playfair)" }}
-                >
-                  BLUE TOKAI
-                </h3>
-                <span
-                  className="text-[10px] tracking-[0.3em] text-[#8B6914] uppercase"
-                  style={{ fontFamily: "var(--font-inter)" }}
-                >
-                  Coffee Roasters
+                <h3 className="text-2xl font-bold text-[#0570E5]">NBC</h3>
+                <span className="text-[10px] tracking-[0.25em] text-[#F476AF] uppercase font-semibold">
+                  Nothing Before Coffee
                 </span>
               </div>
             </div>
 
-            <p
-              className="text-[#D4B48A]/80 text-sm leading-relaxed max-w-sm mb-6"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
-              India&apos;s pioneering specialty coffee roaster. From the hills of the
-              Western Ghats to your cup — every bean has a story, every cup is
-              crafted with intention.
+            <p className="text-white/60 text-sm leading-relaxed mb-6 max-w-xs">
+              Bring on the Buzz — where mornings begin, ideas flow, and
+              communities connect over great coffee.
             </p>
 
-            {/* Contact Info */}
-            <div className="space-y-3">
-              <a
-                href="https://www.google.co.in/maps/place/Blue+Tokai+Coffee+Roasters+%7C+Kalyani+Nagar/@18.5499059,73.89757,15z"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 text-[#D4B48A]/70 hover:text-[#C4883A] transition-colors group"
-              >
-                <MapPin className="w-4 h-4 shrink-0" />
-                <span className="text-sm" style={{ fontFamily: "var(--font-inter)" }}>
-                  Solitaire Business Hub, Kalyani Nagar, Pune
-                </span>
-                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
-              <a
-                href="tel:9810156980"
-                className="flex items-center gap-3 text-[#D4B48A]/70 hover:text-[#C4883A] transition-colors"
-              >
-                <Phone className="w-4 h-4 shrink-0" />
-                <span className="text-sm" style={{ fontFamily: "var(--font-inter)" }}>
-                  9810156980
-                </span>
-              </a>
-              <a
-                href="mailto:kalyaninagar@bluetokaicoffee.com"
-                className="flex items-center gap-3 text-[#D4B48A]/70 hover:text-[#C4883A] transition-colors"
-              >
-                <Mail className="w-4 h-4 shrink-0" />
-                <span className="text-sm" style={{ fontFamily: "var(--font-inter)" }}>
-                  kalyaninagar@bluetokaicoffee.com
-                </span>
-              </a>
-            </div>
-
-            {/* Social Links */}
-            <div className="flex items-center gap-4 mt-6">
-              {[
-                { icon: Instagram, label: "Instagram" },
-                { icon: Facebook, label: "Facebook" },
-                { icon: Twitter, label: "Twitter" },
-              ].map(({ icon: Icon, label }) => (
+            {/* Social Icons */}
+            <div className="flex items-center gap-3">
+              {socialLinks.map(({ icon: Icon, label }) => (
                 <a
                   key={label}
                   href="#"
                   aria-label={label}
-                  className="w-10 h-10 rounded-full border border-[#8B6914]/30 flex items-center justify-center text-[#D4B48A]/60 hover:text-[#C4883A] hover:border-[#C4883A] hover:bg-[#C4883A]/10 transition-all"
+                  className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-[#F476AF] hover:border-[#F476AF]/40 hover:bg-[#F476AF]/10 transition-all duration-300"
                 >
                   <Icon className="w-4 h-4" />
                 </a>
@@ -133,103 +114,103 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Link Columns */}
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h4
-                className="text-sm font-semibold tracking-[0.2em] text-[#C4883A] mb-6 uppercase"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                {category}
-              </h4>
-              <ul className="space-y-3">
-                {links.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-sm text-[#D4B48A]/60 hover:text-[#F0E6D6] transition-colors"
-                      style={{ fontFamily: "var(--font-inter)" }}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+          {/* Column 2 - Quick Links */}
+          <div>
+            <h4 className="text-sm font-semibold tracking-[0.2em] text-[#0570E5] mb-6 uppercase">
+              Quick Links
+            </h4>
+            <ul className="space-y-3">
+              {quickLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="text-sm text-white/50 hover:text-white transition-colors duration-300"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        {/* Newsletter */}
-        <div className="py-8 border-t border-[#8B6914]/20">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h4
-                className="text-lg font-semibold text-[#F0E6D6]"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
-                Stay in the Loop
-              </h4>
-              <p
-                className="text-sm text-[#D4B48A]/60 mt-1"
-                style={{ fontFamily: "var(--font-inter)" }}
-              >
-                Get updates on new roasts, events, and exclusive offers.
-              </p>
-            </div>
-            <div className="flex w-full md:w-auto">
+          {/* Column 3 - Contact */}
+          <div>
+            <h4 className="text-sm font-semibold tracking-[0.2em] text-[#0570E5] mb-6 uppercase">
+              Contact
+            </h4>
+            <ul className="space-y-4">
+              <li>
+                <a
+                  href="tel:9251652988"
+                  className="flex items-center gap-3 text-sm text-white/50 hover:text-white transition-colors duration-300"
+                >
+                  <Phone className="w-4 h-4 shrink-0 text-[#F476AF]" />
+                  9251652988
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:info@nothingbeforecoffee.com"
+                  className="flex items-center gap-3 text-sm text-white/50 hover:text-white transition-colors duration-300"
+                >
+                  <Mail className="w-4 h-4 shrink-0 text-[#F476AF]" />
+                  info@nothingbeforecoffee.com
+                </a>
+              </li>
+              <li className="flex items-center gap-3 text-sm text-white/50">
+                <Clock className="w-4 h-4 shrink-0 text-[#F476AF]" />
+                8AM – 11PM Daily
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4 - Newsletter */}
+          <div>
+            <h4 className="text-sm font-semibold tracking-[0.2em] text-[#0570E5] mb-6 uppercase">
+              Stay Buzzed
+            </h4>
+            <p className="text-sm text-white/50 leading-relaxed mb-5">
+              Get the latest NBC updates, offers, and new menu drops.
+            </p>
+            <form onSubmit={handleNewsletterSubmit} className="space-y-3">
               <input
                 type="email"
                 placeholder="your@email.com"
-                className="flex-1 md:w-64 px-4 py-2.5 bg-[#2C1810] border border-[#8B6914]/30 rounded-l-lg text-[#F0E6D6] text-sm placeholder:text-[#D4B48A]/40 focus:outline-none focus:border-[#C4883A]"
-                style={{ fontFamily: "var(--font-inter)" }}
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#0570E5]/30 focus:border-[#0570E5] transition-all"
               />
               <button
-                className="px-6 py-2.5 bg-[#C4883A] text-[#1A0F08] text-sm font-semibold rounded-r-lg hover:bg-[#8B6914] transition-colors"
-                style={{ fontFamily: "var(--font-inter)" }}
+                type="submit"
+                disabled={isSubscribing}
+                className="w-full px-5 py-3 rounded-lg text-white text-sm font-semibold transition-all duration-300 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+                style={{
+                  background: "linear-gradient(135deg, #0570E5, #F476AF)",
+                }}
               >
-                Subscribe
+                {isSubscribing ? "Subscribing..." : "Subscribe"}
               </button>
-            </div>
+            </form>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="py-6 border-t border-[#8B6914]/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p
-            className="text-xs text-[#D4B48A]/40"
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            © {new Date().getFullYear()} Blue Tokai Coffee Roasters. All rights reserved.
+        {/* ── Bottom Bar ── */}
+        <div className="py-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-white/30">
+            © 2025 Nothing Before Coffee. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
-            <a
-              href="#"
-              className="text-xs text-[#D4B48A]/40 hover:text-[#D4B48A] transition-colors"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
-              Privacy Policy
-            </a>
-            <a
-              href="#"
-              className="text-xs text-[#D4B48A]/40 hover:text-[#D4B48A] transition-colors"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
-              Terms of Service
-            </a>
-            <span
-              className="text-xs text-[#D4B48A]/40 flex items-center gap-1"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
-              Made with <Heart className="w-3 h-3 text-[#C4724E]" /> in India
-            </span>
-          </div>
+          <p className="text-xs text-white/30 flex items-center gap-1">
+            Born in India <span className="text-base">☕</span> with{" "}
+            <Heart className="w-3 h-3 text-[#DD5350] inline" /> 
+          </p>
         </div>
       </div>
 
       {/* Back to Top Button */}
       <motion.button
         onClick={scrollToTop}
-        className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-[#3C2415] text-[#F0E6D6] shadow-lg flex items-center justify-center hover:bg-[#5C3A1E] transition-colors"
+        className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-[#0570E5] text-white shadow-lg flex items-center justify-center hover:bg-[#0455B4] transition-colors"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         aria-label="Back to top"

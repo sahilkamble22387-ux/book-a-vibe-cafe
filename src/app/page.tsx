@@ -1,41 +1,39 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
+import { AnimatePresence } from "framer-motion";
 import LoadingScreen from "@/components/sections/LoadingScreen";
 import Navigation from "@/components/sections/Navigation";
 import Hero from "@/components/sections/Hero";
-import Journey from "@/components/sections/Journey";
-import Roastery from "@/components/sections/Roastery";
-import CoffeeCollection from "@/components/sections/CoffeeCollection";
+import OurStory from "@/components/sections/OurStory";
+import MenuHighlights from "@/components/sections/MenuHighlights";
+import SignatureShrappe from "@/components/sections/SignatureShrappe";
 import CafeExperience from "@/components/sections/CafeExperience";
-import Subscriptions from "@/components/sections/Subscriptions";
-import Events from "@/components/sections/Events";
-import Reservations from "@/components/sections/Reservations";
+import OrderOnline from "@/components/sections/OrderOnline";
+import VisitUs from "@/components/sections/VisitUs";
 import Footer from "@/components/sections/Footer";
 
 export default function Home() {
-  const [showContent, setShowContent] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setShowContent(true), 3200);
-    return () => clearTimeout(timer);
+  const handleLoadingComplete = useCallback(() => {
+    setIsLoading(false);
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#FAF6F0" }}>
-      <LoadingScreen />
+    <main className="min-h-screen flex flex-col">
+      <AnimatePresence>
+        {isLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
+      </AnimatePresence>
       <Navigation />
-      <main className="flex-1">
-        <Hero />
-        <Journey />
-        <Roastery />
-        <CoffeeCollection />
-        <CafeExperience />
-        <Subscriptions />
-        <Events />
-        <Reservations />
-      </main>
+      <Hero />
+      <OurStory />
+      <MenuHighlights />
+      <SignatureShrappe />
+      <CafeExperience />
+      <OrderOnline />
+      <VisitUs />
       <Footer />
-    </div>
+    </main>
   );
 }

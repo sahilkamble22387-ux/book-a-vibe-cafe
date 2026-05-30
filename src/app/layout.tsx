@@ -1,34 +1,34 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
-  style: ["normal", "italic"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "Blue Tokai Coffee Roasters | Kalyani Nagar — India's Specialty Coffee",
-  description: "Step into Blue Tokai's flagship Kalyani Nagar café — where India's finest specialty coffees meet thoughtful design, craftsmanship, and community. From farm to cup.",
-  keywords: ["Blue Tokai", "specialty coffee", "Kalyani Nagar", "Pune", "coffee roasters", "Indian coffee", "artisan coffee", "single origin"],
-  authors: [{ name: "Blue Tokai Coffee Roasters" }],
-  icons: {
-    icon: "/images/bean-icon.png",
-  },
+  title: "Nothing Before Coffee | NBC — Bring on the Buzz",
+  description:
+    "Born in India, Nothing Before Coffee is where mornings begin, ideas flow, and communities connect. High quality coffee, budget friendly prices, zero compromise. Visit our Kalyani Nagar, Pune café.",
+  keywords: [
+    "Nothing Before Coffee",
+    "NBC",
+    "coffee shop",
+    "Kalyani Nagar",
+    "Pune",
+    "Shrappe",
+    "specialty coffee",
+    "cafe",
+    "Indian coffee chain",
+  ],
+  authors: [{ name: "Nothing Before Coffee" }],
   openGraph: {
-    title: "Blue Tokai Coffee Roasters | Kalyani Nagar",
-    description: "India's Specialty Coffee Story — From Farm to Cup",
+    title: "Nothing Before Coffee | Bring on the Buzz",
+    description: "High quality coffee. Budget friendly prices. Zero compromise.",
     type: "website",
   },
 };
@@ -41,7 +41,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${playfair.variable} ${inter.variable} antialiased bg-background text-foreground`}
+        className={`${poppins.variable} antialiased bg-background text-foreground font-sans`}
+        style={{ fontFamily: "var(--font-poppins), sans-serif" }}
       >
         {children}
         <Toaster />
