@@ -244,8 +244,8 @@ export default function SignatureShrappe() {
 
             {/* Flavor Cards */}
             <div ref={cardsRef} className="w-full mb-8">
-              {/* Horizontal scroll on mobile, grid on desktop */}
-              <div className="flex lg:grid lg:grid-cols-3 gap-3 overflow-x-auto pb-3 lg:pb-0 scrollbar-hide -mx-1 px-1">
+              {/* Horizontal scroll on mobile, centered flex-wrap on desktop */}
+              <div className="flex flex-nowrap lg:flex-wrap lg:justify-center gap-3 overflow-x-auto pb-3 lg:pb-0 scrollbar-hide -mx-1 px-1">
                 {flavors.map((flavor, index) => (
                   <motion.div
                     key={flavor.name}
@@ -256,16 +256,16 @@ export default function SignatureShrappe() {
                       delay: 0.15 + index * 0.08,
                       ease: 'easeOut',
                     }}
-                    className="group flex-shrink-0 w-[140px] lg:w-auto rounded-xl px-4 py-3 cursor-default transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                    className="group flex-shrink-0 w-[150px] lg:w-auto rounded-xl px-5 py-3.5 cursor-default transition-all duration-300 hover:scale-105 hover:shadow-lg"
                     style={{
                       backgroundColor: flavor.bgColor,
                       border: `1.5px solid ${flavor.accent}30`,
                     }}
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">{flavor.emoji}</span>
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-xl">{flavor.emoji}</span>
                       <span
-                        className="text-xs sm:text-sm font-semibold whitespace-nowrap"
+                        className="text-sm font-semibold whitespace-nowrap"
                         style={{ color: flavor.accent }}
                       >
                         {flavor.name}
